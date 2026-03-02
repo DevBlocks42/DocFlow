@@ -79,9 +79,12 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 
+# User Auth
+AUTH_USER_MODEL = 'users.User'
+
+
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-# TODO : migrer vers un .env
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
