@@ -1,0 +1,65 @@
+# -------------------------------
+# Python
+# -------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+*.egg
+*.log
+
+# Env
+venv/
+.env
+
+# -------------------------------
+# Django
+# -------------------------------
+*.sqlite3
+db.sqlite3
+*.log
+
+# Static / media
+staticfiles/
+media/
+
+# IDEs
+.vscode/
+.idea/
+*.iml
+
+# Mac / Linux
+.DS_Store
+*.swp
+*.swo
+
+# Migrations
+apps/**/migrations/__pycache__/
+config/**/migrations/__pycache__/
+
+# Byte-compiled / packaging
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Coverage / testing
+htmlcov/
+.coverage
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Cache / temp
+.cache/
+*.tmp
+*.bak
+
+# Logs
+*.log
+
+# VS Code settings
+.vscode/
