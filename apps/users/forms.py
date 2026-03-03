@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.contrib.auth import password_validation
 
 User = get_user_model()
 
@@ -33,15 +34,14 @@ class CustomAuthenticationForm(AuthenticationForm):
 
 class SafeImageField(forms.ImageField):
     default_error_messages = {
-        'invalid_image': "Le fichier uploadé n’est pas une image valide."  # ton message en français
+        'invalid_image': "Le fichier uploadé n’est pas une image valide."  
     }
 
     def to_python(self, data):
         try:
             return super().to_python(data)
         except ValidationError:
-            # Intercepte l'erreur de Pillow et renvoie notre message
-            raise ValidationError(self.error_messages['invalid_image'])
+            raise forms.ValidationError(self.error_messages['invalid_image'])
 
 class UserUpdateForm(forms.ModelForm):
     avatar = SafeImageField(
@@ -73,19 +73,52 @@ class UserUpdateForm(forms.ModelForm):
                 'unique': "Cet email est déjà utilisé."
             }
         }
-        def clean_avatar(self):
-            avatar = self.cleaned_data.get('avatar')
-            if avatar:
-                # Taille max 2MB
-                if avatar.size > 2 * 1024 * 1024:
-                    raise ValidationError("Image trop volumineuse (max 2MB).")
-                try:
-                    img = Image.open(avatar)
-                    img.verify()
-                except Exception:
-                    raise ValidationError("Fichier image invalide.")
-                valid_extensions = ['jpg', 'jpeg', 'png', 'gif']
-                ext = avatar.name.split('.')[-1].lower()
-                if ext not in valid_extensions:
-                    raise ValidationError("Format non autorisé.")
-            return avatar
+    def clean_avatar(self):
+        avatar = self.cleaned_data.get('avatar')
+        if avatar:
+            # Taille max 2MB
+            if avatar.size > 2 * 1024 * 1024:
+                raise form.ValidationError("Image trop volumineuse (max 2MB).")
+                img = Image.open(avatar)
+                img.verify()
+            valid_extensions = ['jpg', 'jpeg', 'png', 'gif']
+            ext = avatar.name.split('.')[-1].lower()
+            if ext not in valid_extensions:
+                raise forms.ValidationError("Format non autorisé.")
+        return avatar        
+
+class EditPasswordForm(forms.Form):
+    current_password = forms.CharField(
+        label="Mot de passe actuel",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+    )
+    new_password = forms.CharField(
+        label="Nouveau mot de passe",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+    )
+    password_confirm = forms.CharField(
+        label="Confirmation du mot de passe",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+    )
+
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        currentPassword = cleaned_data.get("current_password")
+        newPassword = cleaned_data.get("new_password")
+        passwordConfirm = cleaned_data.get("password_confirm")
+        if not self.user.check_password(currentPassword):
+            raise forms.ValidationError("Le mot de passe actuel est incorrect.")
+        if newPassword != passwordConfirm:
+            raise forms.ValidationError("Les nouveaux mots de passe ne correspondent pas.")
+        password_validation.validate_password(newPassword, self.user)
+        return cleaned_data
+
+    def save(self, commit=True):
+        self.user.set_password(self.cleaned_data["new_password"])
+        if commit:
+            self.user.save()
+        return self.user
