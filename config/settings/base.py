@@ -63,7 +63,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -79,9 +79,14 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 
+# User Auth
+AUTH_USER_MODEL = 'users.User'
+LOGIN_REDIRECT_URL = '/users/dashboard/' 
+LOGOUT_REDIRECT_URL = '/login/'
+
+
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-# TODO : migrer vers un .env
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',

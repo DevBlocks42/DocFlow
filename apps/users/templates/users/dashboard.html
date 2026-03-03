@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Bienvenue {{ user.username }} !</h2>
+    <p>Rôle : {{ role|capfirst }}</p>
+
+    {% if messages %}
+    <div>
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="container mt-5">
+        <h2>Modifier mon profil</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% include "includes/form_errors.html" with form=profile_form %}
+            <button type="submit" name="profile-submit" class="btn btn-primary">Enregistrer</button>
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">Annuler</a>
+        </form>
+    </div>
+
+    <div class="container mt-5">
+        <h2>Changer mon mot de passe</h2>
+        <form method="post">
+            {% csrf_token %}
+            {% include "includes/form_errors.html" with form=password_form %}
+            <button type="submit" name="password-submit" class="btn btn-warning">Changer le mot de passe</button>
+        </form>
+    </div>
+
+    <div class="mt-4">
+        <a href="{% url 'logout' %}" class="btn btn-danger">Se déconnecter</a>
+    </div>
+</div>
+{% endblock %}
