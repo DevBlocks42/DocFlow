@@ -1,6 +1,13 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+import uuid, os
+
+
+def user_avatar_path(instance, filename):
+        ext = filename.split('.')[-1]
+        new_filename = f"{uuid.uuid4()}.{ext}"
+        return os.path.join("avatars", new_filename)
 
 class UserManager(BaseUserManager):
     def create_user(self, email, username, password=None, role='employe', **extra_fields):
@@ -29,7 +36,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='employe')
     date_joined = models.DateTimeField(default=timezone.now)
-    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+    avatar = models.ImageField(upload_to=user_avatar_path, null=True, blank=True)
     service = models.CharField(max_length=100, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
