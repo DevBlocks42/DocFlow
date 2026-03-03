@@ -81,6 +81,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # User Auth
 AUTH_USER_MODEL = 'users.User'
+LOGIN_REDIRECT_URL = '/users/dashboard/' 
+LOGOUT_REDIRECT_URL = '/login/'
 
 
 # Database
