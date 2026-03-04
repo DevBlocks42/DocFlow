@@ -11,8 +11,14 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+from PIL import Image
 import environ
 import os
+
+
+#PIL IMAGE RES LIMIT
+Image.MAX_IMAGE_PIXELS = 5_000_000
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
