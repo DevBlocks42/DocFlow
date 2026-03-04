@@ -1,9 +1,10 @@
 from django import forms
-from django.forms.widgets import ClearableFileInput
+from django.forms.widgets import FileInput
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.contrib.auth import password_validation
+from apps.utils.validators import validate_secure_image, sanitize_image
 
 User = get_user_model()
 
@@ -34,11 +35,11 @@ class CustomAuthenticationForm(AuthenticationForm):
     }
 
 class UserUpdateForm(forms.ModelForm):
-    avatar = forms.ImageField(
+    avatar = forms.FileField(
         required=False,
-        widget=forms.ClearableFileInput(attrs={'class': 'form-control'})
+        widget=forms.FileInput(attrs={'class': 'form-control'})
     )
-    class Meta:
+    class Meta: 
         model = User
         fields = ['username', 'email', 'avatar']
         widgets = {
@@ -58,19 +59,17 @@ class UserUpdateForm(forms.ModelForm):
                 'required': "L'email est obligatoire.",
                 'invalid': "Veuillez saisir une adresse email valide.",
                 'unique': "Cet email est déjà utilisé."
+            },
+            'avatar': {
+                'invalid': 'Veuillez choisir une image valide.'
             }
         }
           
     def clean_avatar(self):
         avatar = self.cleaned_data.get('avatar')
         if avatar:
-            # Taille max 2MB
-            if avatar.size > 2 * 1024 * 1024:
-                raise form.ValidationError("Image trop volumineuse (max 2MB).")
-            valid_extensions = ['jpg', 'jpeg', 'png', 'gif']
-            ext = avatar.name.split('.')[-1].lower()
-            if ext not in valid_extensions:
-                raise forms.ValidationError("Format non autorisé.")
+            avatar = validate_secure_image(avatar)
+
         else:
             return None
         return avatar        

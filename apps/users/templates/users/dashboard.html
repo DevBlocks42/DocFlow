@@ -6,6 +6,7 @@
 <div class="container mt-5">
     <h2>Bienvenue {{ user.username }} !</h2>
     <p>Rôle : {{ role|capfirst }}</p>
+    <img src ='{{ user.avatar.url }}'>
 
     {% if messages %}
     <div>

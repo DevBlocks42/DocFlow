@@ -4,10 +4,11 @@ certifi==2026.2.25
 chardet==7.0.0
 charset-normalizer==3.4.4
 cssselect==1.4.0
-Django==6.0.2
+Django==6.0.3
 django-environ==0.13.0
 pillow==12.1.1
 psycopg2==2.9.11
+python-magic==0.4.27
 soupsieve==2.8.3
 sqlparse==0.5.5
 typing_extensions==4.15.0

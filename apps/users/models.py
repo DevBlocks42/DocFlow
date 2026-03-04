@@ -1,11 +1,12 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from apps.utils.validators import validate_secure_image, sanitize_image
 import uuid, os
 
 
 def user_avatar_path(instance, filename):
-    ext = filename.split('.')[-1]
+    ext = "webp"
     new_filename = f"{uuid.uuid4()}.{ext}"
     return os.path.join("avatars", new_filename)
 
@@ -36,7 +37,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='employe')
     date_joined = models.DateTimeField(default=timezone.now)
-    avatar = models.ImageField(upload_to=user_avatar_path, null=True, blank=True)
+    avatar = models.FileField(upload_to=user_avatar_path, validators=[validate_secure_image], null=True, blank=True)
     service = models.CharField(max_length=100, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -44,5 +45,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email' 
     REQUIRED_FIELDS = ['username']
 
+    def save(self, *args, **kwargs):
+        # Si un nouveau fichier est uploadé
+        if self.avatar and hasattr(self.avatar, 'file'):
+            sanitized_file = sanitize_image(self.avatar.file)
+            # Remplace le fichier par la version purifiée
+            self.avatar.save(sanitized_file.name, sanitized_file, save=False)
+
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.username} ({self.email})"
+
