@@ -1,4 +1,5 @@
 from django import forms
+from django.forms.widgets import ClearableFileInput
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
@@ -32,21 +33,10 @@ class CustomAuthenticationForm(AuthenticationForm):
         'inactive': "Ce compte est désactivé."
     }
 
-class SafeImageField(forms.ImageField):
-    default_error_messages = {
-        'invalid_image': "Le fichier uploadé n’est pas une image valide."  
-    }
-
-    def to_python(self, data):
-        try:
-            return super().to_python(data)
-        except ValidationError:
-            raise forms.ValidationError(self.error_messages['invalid_image'])
-
 class UserUpdateForm(forms.ModelForm):
-    avatar = SafeImageField(
-        required=False, 
-        widget=forms.FileInput(attrs={'class': 'form-control'}) 
+    avatar = forms.ImageField(
+        required=False,
+        widget=forms.ClearableFileInput(attrs={'class': 'form-control'})
     )
     class Meta:
         model = User
@@ -57,9 +47,6 @@ class UserUpdateForm(forms.ModelForm):
             }),
             'email': forms.EmailInput(attrs={
                 'class': 'form-control'
-            }),
-            'avatar': forms.FileInput(attrs={
-                'class': 'form-control',
             })
         }
         error_messages = {
@@ -73,22 +60,19 @@ class UserUpdateForm(forms.ModelForm):
                 'unique': "Cet email est déjà utilisé."
             }
         }
-    #Security warning : review    
+          
     def clean_avatar(self):
         avatar = self.cleaned_data.get('avatar')
         if avatar:
             # Taille max 2MB
             if avatar.size > 2 * 1024 * 1024:
                 raise form.ValidationError("Image trop volumineuse (max 2MB).")
-            try:
-                img = Image.open(avatar)
-                img.verify()
-            except Exception:
-                raise forms.ValidationError("Fichier image invalide.")
             valid_extensions = ['jpg', 'jpeg', 'png', 'gif']
             ext = avatar.name.split('.')[-1].lower()
             if ext not in valid_extensions:
                 raise forms.ValidationError("Format non autorisé.")
+        else:
+            return None
         return avatar        
 
 class EditPasswordForm(forms.Form):
