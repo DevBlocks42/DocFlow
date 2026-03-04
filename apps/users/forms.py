@@ -73,14 +73,18 @@ class UserUpdateForm(forms.ModelForm):
                 'unique': "Cet email est déjà utilisé."
             }
         }
+    #Security warning : review    
     def clean_avatar(self):
         avatar = self.cleaned_data.get('avatar')
         if avatar:
             # Taille max 2MB
             if avatar.size > 2 * 1024 * 1024:
                 raise form.ValidationError("Image trop volumineuse (max 2MB).")
+            try:
                 img = Image.open(avatar)
                 img.verify()
+            except Exception:
+                raise forms.ValidationError("Fichier image invalide.")
             valid_extensions = ['jpg', 'jpeg', 'png', 'gif']
             ext = avatar.name.split('.')[-1].lower()
             if ext not in valid_extensions:

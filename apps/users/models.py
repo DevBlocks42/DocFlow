@@ -5,9 +5,9 @@ import uuid, os
 
 
 def user_avatar_path(instance, filename):
-        ext = filename.split('.')[-1]
-        new_filename = f"{uuid.uuid4()}.{ext}"
-        return os.path.join("avatars", new_filename)
+    ext = filename.split('.')[-1]
+    new_filename = f"{uuid.uuid4()}.{ext}"
+    return os.path.join("avatars", new_filename)
 
 class UserManager(BaseUserManager):
     def create_user(self, email, username, password=None, role='employe', **extra_fields):
