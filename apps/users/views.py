@@ -10,6 +10,7 @@ from .forms import EditPasswordForm
 class UserLoginView(LoginView):
     template_name='users/login.html'
     authentication_form=CustomAuthenticationForm
+    redirect_authenticated_user = True
 
 @login_required
 def dashboard(request):
