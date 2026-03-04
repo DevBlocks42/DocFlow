@@ -46,12 +46,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['username']
 
     def save(self, *args, **kwargs):
-        # Si un nouveau fichier est uploadé
         if self.avatar and hasattr(self.avatar, 'file'):
             sanitized_file = sanitize_image(self.avatar.file)
-            # Remplace le fichier par la version purifiée
             self.avatar.save(sanitized_file.name, sanitized_file, save=False)
-
         super().save(*args, **kwargs)
 
     def __str__(self):
