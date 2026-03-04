@@ -3,13 +3,16 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.views.decorators.http import require_http_methods
 from .forms import CustomAuthenticationForm
 from .forms import UserUpdateForm
 from .forms import EditPasswordForm
 
+
 class UserLoginView(LoginView):
     template_name='users/login.html'
     authentication_form=CustomAuthenticationForm
+    redirect_authenticated_user = True
 
 @login_required
 def dashboard(request):
@@ -20,7 +23,7 @@ def dashboard(request):
         if 'profile-submit' in request.POST:
             profile_form = UserUpdateForm(request.POST, request.FILES, instance=user)
             if profile_form.is_valid():
-                profile_form.save()
+                profile_form.save(commit=True)
                 messages.success(request, "Profil mis à jour avec succès.")
                 return redirect('dashboard')
         elif 'password-submit' in request.POST:
