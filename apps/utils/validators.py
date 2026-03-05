@@ -50,26 +50,24 @@ def validate_document_file(f):
     OFFICE_EXTENSIONS = ["xlsx", "ods", "docx", "odt"]
     IMAGE_EXTENSIONS = ["png", "jpg", "jpeg"]
     #Extension/Nom & taille
-    isPDF = False
     filename = os.path.basename(f.name.strip()) 
     ext = os.path.splitext(filename)[1][1:].lower()
-    if ext not in ALLOWED_EXTENSIONS:
-        raise ValidationError(f"Extension non autorisée: .{ext}")
     if f.size > MAX_FILE_SIZE:
         raise ValidationError(f"Fichier trop volumineux (> {MAX_FILE_SIZE // (1024*1024)} MB)")
+    if ext not in ALLOWED_EXTENSIONS:
+        raise ValidationError(f"Extension non autorisée: .{ext}")
     #Type MIME
     f.seek(0)
     header = f.read(8)
     f.seek(0)
-    if ext == "pdf":
+    if ext.lower() == "pdf":
         if not header.startswith(b"%PDF-"):
             raise ValidationError("Le fichier n'est pas un PDF valide.")
-        isPDF = True
         f = sanitize_pdf(f)
-    elif ext in OFFICE_EXTENSIONS:
+    elif ext.lower() in OFFICE_EXTENSIONS:
         if not header.startswith(b"PK\x03\x04"):
             raise ValidationError(f"Le fichier {ext} n'est pas un fichier Office/LibreOffice valide.")
-    elif ext in IMAGE_EXTENSIONS:
+    elif ext.lower()  in IMAGE_EXTENSIONS:
         if not (header[:2] == b"\xFF\xD8" or header[:8] == b"\x89PNG\r\n\x1a\n"):
             raise ValidationError(f"L'image {f.name} n'est pas valide.")
         f = validate_secure_image(f)

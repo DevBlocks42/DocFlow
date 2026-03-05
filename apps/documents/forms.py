@@ -50,15 +50,3 @@ class CreateDocumentForm(forms.ModelForm):
         if user and user.role != 'manager':
             raise ValidationError("Seul un utilisateur avec le rôle 'manager' peut être assigné à ce document.")
         return user
-
-    # Security warning : review    
-   # def clean_file(self):
-    #    f = self.cleaned_data.get('file')
-     #   if f:
-      #      valid_extensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx']
-       #     ext = f.name.split('.')[-1].lower()
-        #    if ext not in valid_extensions:
-         #       raise forms.ValidationError("Format de fichier non autorisé.")
-          #  if f.size > 10 * 1024 * 1024:  # Limite 10MB
-           #     raise forms.ValidationError("Fichier trop volumineux (max 10MB).")
-        #return f
