@@ -5,16 +5,17 @@ from PIL.Image import DecompressionBombError
 from django.core.files.base import ContentFile
 from django.core.exceptions import ValidationError
 import os, io, fitz
+from django.conf import settings
 
 def validate_secure_image(f):
     ALLOWED_MIMES = ['PNG', 'JPEG']
-    MAX_IMAGE_SIZE=5*1024*1024
+    MAX_IMAGE_SIZE=settings.FILE_UPLOAD_MAX_MEMORY_SIZE
     MAX_WIDTH = 2048
     MAX_HEIGHT = 2048
     MAX_PIXELS = 4_194_304
     #Taille
     if f.size > MAX_IMAGE_SIZE:
-        raise ValidationError("Image trop volumineuse.")
+        raise ValidationError("Image trop volumineuse (Max : " + str(MAX_IMAGE_SIZE // 1000000) + " MO).")
     f.seek(0)
     try:
         Image.MAX_IMAGE_PIXELS = MAX_PIXELS
@@ -23,7 +24,7 @@ def validate_secure_image(f):
                 raise ValidationError("Format de fichier invalide.")
             if img.width > MAX_WIDTH or img.height > MAX_HEIGHT:
                 raise ValidationError("Largeur ou hauteur trop grande.")
-            if img.width * img.height > MAX_IMAGE_SIZE:
+            if img.width * img.height > MAX_PIXELS:
                 raise ValidationError("Résolution tron grande.")
     except DecompressionBombError:
         raise ValidationError("Image potentiellement dangereuse (Decompression Bomb).")
@@ -45,7 +46,7 @@ def sanitize_image(f):
         return ContentFile(out.read(), name=f.name.rsplit('.', 1)[0] + ".webp")
 
 def validate_document_file(f):
-    MAX_FILE_SIZE = 10 * 1024 * 1024  
+    MAX_FILE_SIZE = settings.FILE_UPLOAD_MAX_MEMORY_SIZE
     ALLOWED_EXTENSIONS = ["pdf", "xlsx", "ods", "docx", "odt", "png", "jpg", "jpeg"]
     OFFICE_EXTENSIONS = ["xlsx", "ods", "docx", "odt"]
     IMAGE_EXTENSIONS = ["png", "jpg", "jpeg"]
@@ -53,7 +54,7 @@ def validate_document_file(f):
     filename = os.path.basename(f.name.strip()) 
     ext = os.path.splitext(filename)[1][1:].lower()
     if f.size > MAX_FILE_SIZE:
-        raise ValidationError(f"Fichier trop volumineux (> {MAX_FILE_SIZE // (1024*1024)} MB)")
+        raise ValidationError(f"Fichier trop volumineux (Max : {MAX_FILE_SIZE // (1000000)} MO).")
     if ext not in ALLOWED_EXTENSIONS:
         raise ValidationError(f"Extension non autorisée: .{ext}")
     #Type MIME
