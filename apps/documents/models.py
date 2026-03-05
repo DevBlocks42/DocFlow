@@ -1,6 +1,13 @@
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
+from apps.utils.validators import validate_document_file
+import uuid, os
+
+
+def user_document_path(instance, filename):
+    new_filename = f"{uuid.uuid4()}"
+    return os.path.join("documents", new_filename)
 
 class Category(models.Model):
     name = models.CharField(max_length=32, unique=True)
@@ -18,7 +25,7 @@ class Document(models.Model):
     ]
     title = models.CharField(max_length=64)
     description = models.TextField()
-    file = models.FileField(upload_to='documents/')
+    file = models.FileField(upload_to=user_document_path, validators=[validate_document_file])
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='documents_created')
     assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='documents_assigned')
