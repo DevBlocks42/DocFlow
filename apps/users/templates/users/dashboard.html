@@ -6,8 +6,19 @@
 <div class="container mt-5">
     <h2>Bienvenue {{ user.username }} !</h2>
     <p>Rôle : {{ role|capfirst }}</p>
-    <img src ='{{ user.avatar.url }}'>
-
+    {% if user.avatar %}
+        <img src ='{{ user.avatar.url }}'>
+    {% endif %}
+    <div class='container mt-4'>
+        <a class='btn btn-primary' href='{% url 'list-documents' %}'>
+            {% if user.role == 'employe' %}
+                Mes documents
+            {% endif %}
+            {% if user.role == 'manager' or user.role == 'admin' %}
+                Documents
+            {% endif %}
+        </a>
+    </div>
     {% if messages %}
     <div>
         {% for message in messages %}

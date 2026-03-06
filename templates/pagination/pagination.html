@@ -1,0 +1,25 @@
+<nav aria-label="Pagination" class='mt-4'>
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link text-dark" href="?page={{ page_obj.previous_page_number }}&sort_field={{ sort_field }}&sort_order={{ sort_order}}">Précédent</a>
+            </li>
+        {% endif %}
+        {% for i in page_obj.paginator.page_range %}
+            {% if i == page_obj.number %}
+                <li class="page-item">
+                    <b><strong><a class="page-link bg-dark text-white" href="?page={{ page_obj.number }}&sort_field={{ sort_field }}&sort_order={{ sort_order}}">{{ page_obj.number }}</a></strong></b>
+                </li>
+            {% else %}
+                <li class="page-item">
+                    <a class="page-link text-dark" href="?page={{ i }}&sort_field={{ sort_field }}&sort_order={{ sort_order}}">{{ i }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link text-dark" href="?page={{ page_obj.next_page_number }}&sort_field={{ sort_field }}&sort_order={{ sort_order}}">Suivant</a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>

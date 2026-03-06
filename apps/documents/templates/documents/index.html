@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Nouveau document{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Documents accessibles</h2>
+    <table class='table'>
+        <thead>
+            <th>
+                <a href="?sort_field=title&sort_order={% if sort_field == 'title' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+                    Titre
+                    {% if sort_field == 'title' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                </a>
+            </th>
+            <th>
+                <a href="?sort_field=description&sort_order={% if sort_field == 'description' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+                    Description
+                    {% if sort_field == 'description' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                </a>
+            </th>
+            <th>
+                <a href="?sort_field=category&sort_order={% if sort_field == 'category' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+                    Catégorie
+                    {% if sort_field == 'category' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                </a>
+            </th>
+            <th>
+                <a href="?sort_field=created_by&sort_order={% if sort_field == 'created_by' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+                    Auteur
+                    {% if sort_field == 'created_by' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                </a>
+            </th>
+            <th>
+                <a href="?sort_field=assigned_to&sort_order={% if sort_field == 'assigned_to' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+                    Assigné à
+                    {% if sort_field == 'assigned_to' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                </a>
+            </th>
+            <th>
+                <a href="?sort_field=created_at&sort_order={% if sort_field == 'created_at' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+                    Date de création
+                    {% if sort_field == 'created_at' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                </a>
+            </th>
+            <th>
+                <a href="?sort_field=status&sort_order={% if sort_field == 'status' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+                    Statut
+                    {% if sort_field == 'status' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                </a>
+            </th>
+        </thead>
+        <tbody>
+            {% for document in page_obj %}
+                <tr>
+                    <td>{{ document.title }}</td>
+                    <td>{{ document.description }}</td>
+                    <td>{{ document.category }}</td>
+                    <td>{{ document.created_by }}</td>
+                    <td>{{ document.assigned_to }}</td>
+                    <td>{{ document.created_at|date:'d/m/y H:i' }}</td>
+                    <td>{{ document.status }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% include "pagination/pagination.html" %}
+</div>
+{% endblock %}
