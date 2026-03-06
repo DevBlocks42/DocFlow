@@ -1,4 +1,3 @@
-import environ
 from io import BytesIO
 from PIL import Image, UnidentifiedImageError, ImageOps
 from PIL.Image import DecompressionBombError
