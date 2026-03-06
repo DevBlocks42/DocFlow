@@ -23,23 +23,23 @@
                     {% include "pagination/column_filter.html" with column_name='description' %}
                 </th>
                 <th>
-                    <a href="?sort_field=category&sort_order={% if sort_field == 'category' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter|urlencode }}{% endif %}">
+                    <a href="?sort_field=category__name&sort_order={% if sort_field == 'category__name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter|urlencode }}{% endif %}">
                         Catégorie
-                        {% if sort_field == 'category' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                        {% if sort_field == 'category__name' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
                     </a>
                     {% include "pagination/column_filter.html" with column_name='category__name' %}
                 </th>
                 <th>
-                    <a href="?sort_field=created_by&sort_order={% if sort_field == 'created_by' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter|urlencode }}{% endif %}">
+                    <a href="?sort_field=created_by__username&sort_order={% if sort_field == 'created_by__username' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter|urlencode }}{% endif %}">
                         Auteur
-                        {% if sort_field == 'created_by' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                        {% if sort_field == 'created_by__username' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
                     </a>
                     {% include "pagination/column_filter.html" with column_name='created_by__username' %}
                 </th>
                 <th>
-                    <a href="?sort_field=assigned_to&sort_order={% if sort_field == 'assigned_to' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter|urlencode }}{% endif %}">
+                    <a href="?sort_field=assigned_to__username&sort_order={% if sort_field == 'assigned_to__username' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter|urlencode }}{% endif %}">
                         Assigné à
-                        {% if sort_field == 'assigned_to' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                        {% if sort_field == 'assigned_to__username' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
                     </a>
                     {% include "pagination/column_filter.html" with column_name='assigned_to__username' %}
                 </th>
