@@ -1,0 +1,6 @@
+
+<form class='form-inline mx-auto' method='GET'>
+    <input type='hidden' name='filter_field' value='{{ column_name }}'>
+        <input class='form-control mt-2' type='text' name='filter' value="{% if filter_field == column_name %}{{ filter|default:'' }}{% endif %}">
+    <input class='form-control mt-2' type='submit' value='Filtrer'>
+</form>
