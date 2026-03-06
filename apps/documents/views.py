@@ -6,7 +6,7 @@ from .forms import CreateDocumentForm
 from .models import Document
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.conf import settings
-from apps.utils.paginators import paginate_and_sort
+from apps.utils.paginators import paginate_sort_and_filter
 
 @login_required
 def create_document(request):
@@ -32,7 +32,7 @@ def list_documents(request):
         documents = Document.objects.filter(assigned_to=user)
     elif user.role == "admin":
         documents = Document.objects.all()
-    allowed_fields = ["title", "description", "category", "assigned_to", "created_by", "created_at", "status"]
-    context = paginate_and_sort(request, documents, "created_at", allowed_fields)
+    allowed_fields = ["title", "description", "category__name", "assigned_to__username", "created_by__username", "created_at", "status"]
+    context = paginate_sort_and_filter(request, documents, "created_at", allowed_fields)
     return render(request, "documents/index.html", context)
 
