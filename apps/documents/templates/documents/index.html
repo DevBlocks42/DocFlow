@@ -1,10 +1,19 @@
 {% extends "base.html" %}
 
-{% block title %}Nouveau document{% endblock %}
+{% block title %}Documents{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
     <h2>Documents accessibles</h2>
+    {% if messages %}
+    <div>
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
     <div class='table-responsive'>
         <table class='table'>
             <thead class='text-center'>
@@ -57,6 +66,11 @@
                     </a>
                     {% include "pagination/column_filter.html" with column_name='status' %}
                 </th>
+                {% if user.role == 'employe' %}
+                    <th>
+                        Action
+                    </th>
+                {% endif %}
             </thead>
             <tbody class='justify-content-center'>
                 {% for document in page_obj %}
@@ -68,6 +82,11 @@
                         <td>{{ document.assigned_to }}</td>
                         <td>{{ document.created_at|date:'d/m/y H:i' }}</td>
                         <td>{{ document.status }}</td>
+                        {% if user.role == 'employe' %}
+                            <td>
+                                <a href="{% url 'new-workflow' %}?id={{ document.id }}" class='btn btn-warning'>Soumettre</button>
+                            </td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
             </tbody>

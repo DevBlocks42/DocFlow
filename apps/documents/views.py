@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -17,7 +16,7 @@ def create_document(request):
             doc.created_by = request.user
             doc.save()
             messages.success(request, "Document créé avec succès.")
-            return redirect('dashboard') 
+            return redirect('list-documents') 
     else:
         form = CreateDocumentForm()
     return render(request, 'documents/new_doc.html', {'form': form})
@@ -27,12 +26,15 @@ def list_documents(request):
     documents = []
     user = request.user
     if user.role == "employe":
-        documents = Document.objects.filter(created_by=user)
+        documents = Document.objects.filter(created_by=user, status='draft')
     elif user.role == "manager":
-        documents = Document.objects.filter(assigned_to=user)
+        documents = Document.objects.filter(assigned_to=user, status='pending')
     elif user.role == "admin":
         documents = Document.objects.all()
     allowed_fields = ["title", "description", "category__name", "assigned_to__username", "created_by__username", "created_at", "status"]
     context = paginate_sort_and_filter(request, documents, "created_at", allowed_fields)
+    context.update({
+        'user': user
+    })
     return render(request, "documents/index.html", context)
 
