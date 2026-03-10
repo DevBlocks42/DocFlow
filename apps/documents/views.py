@@ -26,9 +26,9 @@ def list_documents(request):
     documents = []
     user = request.user
     if user.role == "employe":
-        documents = Document.objects.filter(created_by=user, status='draft')
+        documents = Document.objects.filter(created_by=user, status=Document.STATUS_CHOICES[0][0])
     elif user.role == "manager":
-        documents = Document.objects.filter(assigned_to=user, status='pending')
+        documents = Document.objects.filter(assigned_to=user, status=Document.STATUS_CHOICES[1][0])
     elif user.role == "admin":
         documents = Document.objects.all()
     allowed_fields = ["title", "description", "category__name", "assigned_to__username", "created_by__username", "created_at", "status"]

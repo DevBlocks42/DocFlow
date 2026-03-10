@@ -27,7 +27,7 @@ def create_workflow(request):
         if form.is_valid():
             workflow = form.save(commit=False)
             workflow.document = document
-            workflow.document.status = 'pending'
+            workflow.document.status = Document.STATUS_CHOICES[1][0]
             workflow.performed_by = request.user
             workflow.performed_at = timezone.now()
             workflow.save()
