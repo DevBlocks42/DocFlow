@@ -4,7 +4,11 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2>Documents accessibles</h2>
+    {% if user.role == 'employe' %}
+        <h2>Mes documents</h2>
+    {% elif user.role == 'manager' %}
+        <h2>Documents en attente</h2>
+    {% endif %}
     {% if messages %}
     <div>
         {% for message in messages %}
@@ -66,7 +70,7 @@
                     </a>
                     {% include "pagination/column_filter.html" with column_name='status' %}
                 </th>
-                {% if user.role == 'employe' %}
+                {% if user.role == 'employe' or user.role == 'manager' %}
                     <th>
                         Action
                     </th>
@@ -86,6 +90,10 @@
                             <td>
                                 <a href="{% url 'new-workflow' %}?id={{ document.id }}" class='btn btn-warning'>Soumettre</button>
                             </td>
+                        {% elif user.role == 'manager' %}
+                        <td>
+                            <a href="?id={{ document.id }}" class='btn btn-warning'>Valider</button>
+                        </td>
                         {% endif %}
                     </tr>
                 {% endfor %}

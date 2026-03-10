@@ -11,7 +11,7 @@ def create_workflow(request):
     document_id = request.GET.get("id")
     try:
         document = get_object_or_404(Document, id=document_id)
-        if document.status != 'draft' or document.created_by != request.user:
+        if document.status != Document.STATUS_CHOICES[0][0] or document.created_by != request.user:
             messages.warning(request, "Le document que vous souhaitez soumettre n'est pas accessible.")
             return redirect('list-documents')
     except Http404:
