@@ -20,7 +20,7 @@ def create_workflow(request):
                 return redirect('list-documents')
         elif user.role == 'manager':
             if document.status != Document.STATUS_PENDING or document.assigned_to != request.user:
-                messages.warning(request, "Le document que vous souhaitez soumettre n'est pas accessible.")
+                messages.warning(request, "Le document que vous souhaitez valider n'est pas accessible.")
                 return redirect('list-documents')
     except Http404:
         messages.warning(request, "Le document que vous souhaitez soumettre n'existe pas.")
