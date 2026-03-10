@@ -5,7 +5,8 @@ from apps.utils.validators import validate_document_file
 import uuid, os
 
 def user_document_path(instance, filename):
-    new_filename = f"{uuid.uuid4()}"
+    ext = os.path.splitext(filename)[1] 
+    new_filename = f"{uuid.uuid4()}{ext}"
     return os.path.join("documents", new_filename)
 
 class Category(models.Model):
