@@ -8,15 +8,15 @@ from django.http import FileResponse
 from apps.utils.paginators import paginate_sort_and_filter
 from .forms import CreateDocumentForm
 from .models import Document
+from django.core.exceptions import ValidationError
+import apps.documents.services.document_service as document_service
 
 @login_required
 def create_document(request):
     if request.method == 'POST':
         form = CreateDocumentForm(request.POST, request.FILES)
         if form.is_valid():
-            doc = form.save(commit=False)
-            doc.created_by = request.user
-            doc.save()
+            document_service.create_document(request.user, form)
             messages.success(request, "Document créé avec succès.")
             return redirect('list-documents') 
     else:
@@ -25,31 +25,25 @@ def create_document(request):
 
 @login_required
 def list_documents(request):
-    documents = []
     user = request.user
-    if user.role == "employe":
-        documents = Document.objects.filter(created_by=user)
-    elif user.role == "manager":
-        documents = Document.objects.filter(assigned_to=user, status=Document.STATUS_PENDING)
-    elif user.role == "admin":
-        documents = Document.objects.all()
-    allowed_fields = ["title", "description", "category__name", "assigned_to__username", "created_by__username", "created_at", "status"]
-    context = paginate_sort_and_filter(request, documents, "created_at", allowed_fields)
-    context.update({
-        'user': user
-    })
+    default_sort_field = "created_at"
+    page_number = request.GET.get('page', 1)
+    sort_field = request.GET.get('sort_field', default_sort_field)
+    sort_order = request.GET.get('sort_order', 'asc')
+    filter_field = request.GET.get('filter_field')
+    filter = request.GET.get('filter')
+    try:
+        context = document_service.list_documents(user, page_number, sort_field, sort_order, filter_field, filter)
+    except ValidationError as e:
+        messages.warning(request, e.message)
+        return redirect('list-documents')
     return render(request, "documents/index.html", context)
 
 @login_required
 def download_document(request, document_id):
     user = request.user
     document = get_object_or_404(Document, id=document_id)
-    if user.role == 'manager':
-        if user != document.assigned_to:
-            messages.warning(request, "Vous n'avez pas la permission de télécharger ce document.")
-            return redirect('list-documents')
-    elif user.role == 'employe':
-        if user != document.created_by:
-            messages.warning(request, "Vous n'avez pas la permission de télécharger ce document.")
-            return redirect('list-documents')
+    if not document_service.document_download_allowed(user, document):
+        messages.warning(request, "Vous n'avez pas la permission de télécharger ce document.")
+        return redirect('list-documents')
     return FileResponse(document.file.open('rb'), as_attachment=True)
