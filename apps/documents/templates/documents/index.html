@@ -85,7 +85,7 @@
                         <td>{{ document.created_by }}</td>
                         <td>{{ document.assigned_to }}</td>
                         <td>{{ document.created_at|date:'d/m/y H:i' }}</td>
-                        <td>{{ document.status }}</td>
+                        <td>{{ document.get_status_display }}</td>
                         {% if user.role == 'employe' %}
                             <td>
                                 <a href="{% url 'new-workflow' %}?id={{ document.id }}" class='btn btn-warning'>Soumettre</button>
