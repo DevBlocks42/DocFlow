@@ -92,7 +92,7 @@
                             </td>
                         {% elif user.role == 'manager' %}
                         <td>
-                            <a href="?id={{ document.id }}" class='btn btn-warning'>Valider</button>
+                            <a href="{% url 'new-workflow' %}?id={{ document.id }}" class='btn btn-warning'>Valider</button>
                         </td>
                         {% endif %}
                     </tr>
