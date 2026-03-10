@@ -79,20 +79,23 @@
             <tbody class='justify-content-center'>
                 {% for document in page_obj %}
                     <tr>
-                        <td>{{ document.title }}</td>
-                        <td>{{ document.description }}</td>
-                        <td>{{ document.category }}</td>
-                        <td>{{ document.created_by }}</td>
-                        <td>{{ document.assigned_to }}</td>
-                        <td>{{ document.created_at|date:'d/m/y H:i' }}</td>
-                        <td>{{ document.get_status_display }}</td>
+                        <td class='align-middle'>{{ document.title }}</td>
+                        <td class='align-middle'>{{ document.description }}</td>
+                        <td class='align-middle'>{{ document.category }}</td>
+                        <td class='align-middle'>{{ document.created_by }}</td>
+                        <td class='align-middle'>{{ document.assigned_to }}</td>
+                        <td class='align-middle'>{{ document.created_at|date:'d/m/y H:i' }}</td>
+                        <td class='align-middle'>{{ document.get_status_display }}</td>
                         {% if user.role == 'employe' %}
-                            <td>
-                                <a href="{% url 'new-workflow' %}?id={{ document.id }}" class='btn btn-warning'>Soumettre</button>
+                            <td class='align-middle'>
+                                <a href="{% url 'new-workflow' %}?id={{ document.id }}" class='btn btn-warning'>Soumettre</a>
                             </td>
                         {% elif user.role == 'manager' %}
-                        <td>
-                            <a href="{% url 'new-workflow' %}?id={{ document.id }}" class='btn btn-warning'>Valider</button>
+                        <td class='align-middle'>
+                            <div class="d-flex gap-2">
+                                <a href="{% url 'new-workflow' %}?id={{ document.id }}&reject=0" class='btn btn-warning'>Valider</a>
+                                <a href="{% url 'new-workflow' %}?id={{ document.id }}&reject=1" class='btn btn-warning'>Rejeter</a>
+                            </div>
                         </td>
                         {% endif %}
                     </tr>

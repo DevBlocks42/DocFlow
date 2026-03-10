@@ -12,6 +12,7 @@ from django.db import transaction
 def create_workflow(request):
     user = request.user
     document_id = request.GET.get("id")
+    rejection = int(request.GET.get("reject", -1))
     try:
         document = get_object_or_404(Document, id=document_id)
         if user.role == 'employe':
@@ -28,7 +29,8 @@ def create_workflow(request):
     if request.method == "GET":
         form = CreateWorkflowForm()
         return render(request, 'workflows/new_workflow.html', {
-            'form': form
+            'form': form,
+            'rejection': rejection
         })
     elif request.method == "POST":
         form = CreateWorkflowForm(request.POST)
@@ -39,9 +41,14 @@ def create_workflow(request):
                 document_status = Document.STATUS_PENDING
                 success_message = "Le document a bien été envoyé en validation."
             elif user.role == 'manager':
-                workflow_action = Workflow.STATUS_VALIDATED
-                document_status = Document.STATUS_VALIDATED
-                success_message = "Le document a bien été approuvé."
+                if rejection == 1:
+                    workflow_action = Workflow.STATUS_ARCHIVED
+                    document_status = Document.STATUS_DRAFT
+                    success_message = "Le document a bien été archivé."
+                else:
+                    workflow_action = Workflow.STATUS_VALIDATED
+                    document_status = Document.STATUS_VALIDATED
+                    success_message = "Le document a bien été approuvé."
             workflow.action = workflow_action
             workflow.document = document
             workflow.document.status = document_status
