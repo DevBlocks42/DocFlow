@@ -4,12 +4,7 @@ from django.core.exceptions import ValidationError
 from django.db.models import DateField, DateTimeField
 from datetime import datetime
 
-def paginate_sort_and_filter(request, objects, default_sort_field, allowed_fields, documents_per_page=settings.MAX_DOCUMENTS_PER_PAGE):
-    page_number = request.GET.get('page', 1)
-    sort_field = request.GET.get('sort_field', default_sort_field)
-    sort_order = request.GET.get('sort_order', 'asc')
-    filter_field = request.GET.get('filter_field')
-    filter = request.GET.get('filter')
+def paginate_sort_and_filter(page_number, sort_field, sort_order, filter_field, filter, objects, default_sort_field, allowed_fields, documents_per_page=settings.MAX_DOCUMENTS_PER_PAGE):
     if sort_field not in allowed_fields or (filter_field and filter_field not in allowed_fields):
         raise ValidationError("Champ non autorisé.")
     if sort_order== 'asc':
