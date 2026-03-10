@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import CreateDocumentForm
-from .models import Document
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.conf import settings
 from apps.utils.paginators import paginate_sort_and_filter
+from .forms import CreateDocumentForm
+from .models import Document
 
 @login_required
 def create_document(request):
@@ -26,9 +26,9 @@ def list_documents(request):
     documents = []
     user = request.user
     if user.role == "employe":
-        documents = Document.objects.filter(created_by=user, status='draft')
+        documents = Document.objects.filter(created_by=user, status=Document.STATUS_DRAFT)
     elif user.role == "manager":
-        documents = Document.objects.filter(assigned_to=user, status='pending')
+        documents = Document.objects.filter(assigned_to=user, status=Document.STATUS_PENDING)
     elif user.role == "admin":
         documents = Document.objects.all()
     allowed_fields = ["title", "description", "category__name", "assigned_to__username", "created_by__username", "created_at", "status"]
@@ -37,4 +37,3 @@ def list_documents(request):
         'user': user
     })
     return render(request, "documents/index.html", context)
-

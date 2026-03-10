@@ -1,19 +1,27 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import CreateWorkflowForm
+from .models import Workflow
 from django.contrib import messages
 from apps.documents.models import Document
 from django.http import Http404
 from django.utils import timezone
+from django.db import transaction
 
 @login_required
 def create_workflow(request):
+    user = request.user
     document_id = request.GET.get("id")
     try:
         document = get_object_or_404(Document, id=document_id)
-        if document.status != 'draft' or document.created_by != request.user:
-            messages.warning(request, "Le document que vous souhaitez soumettre n'est pas accessible.")
-            return redirect('list-documents')
+        if user.role == 'employe':
+            if document.status != Document.STATUS_DRAFT or document.created_by != request.user:
+                messages.warning(request, "Le document que vous souhaitez soumettre n'est pas accessible.")
+                return redirect('list-documents')
+        elif user.role == 'manager':
+            if document.status != Document.STATUS_PENDING or document.assigned_to != request.user:
+                messages.warning(request, "Le document que vous souhaitez soumettre n'est pas accessible.")
+                return redirect('list-documents')
     except Http404:
         messages.warning(request, "Le document que vous souhaitez soumettre n'existe pas.")
         return redirect('list-documents')
@@ -26,11 +34,21 @@ def create_workflow(request):
         form = CreateWorkflowForm(request.POST)
         if form.is_valid():
             workflow = form.save(commit=False)
+            if user.role == 'employe':
+                workflow_action = Workflow.STATUS_PENDING
+                document_status = Document.STATUS_PENDING
+                success_message = "Le document a bien été envoyé en validation."
+            elif user.role == 'manager':
+                workflow_action = Workflow.STATUS_VALIDATED
+                document_status = Document.STATUS_VALIDATED
+                success_message = "Le document a bien été approuvé."
+            workflow.action = workflow_action
             workflow.document = document
-            workflow.document.status = 'pending'
+            workflow.document.status = document_status
             workflow.performed_by = request.user
             workflow.performed_at = timezone.now()
-            workflow.save()
-            workflow.document.save()
-            messages.success(request, "Le document a bien été envoyé en validation.")
+            with transaction.atomic():
+                workflow.save()
+                workflow.document.save()
+            messages.success(request, success_message)
     return redirect('list-documents')
