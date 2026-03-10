@@ -88,13 +88,21 @@
                         <td class='align-middle'>{{ document.get_status_display }}</td>
                         {% if user.role == 'employe' %}
                             <td class='align-middle'>
-                                <a href="{% url 'new-workflow' %}?id={{ document.id }}" class='btn btn-warning'>Soumettre</a>
+                                {% if document.status == 'draft' %}
+                                    <div class="d-flex gap-2">
+                                        <a href="{% url 'new-workflow' %}?id={{ document.id }}" class='btn btn-warning'>Soumettre</a>
+                                        <a href="{% url 'download-document' document.id %}" class='btn btn-success'>Télécharger</a>
+                                    </div>
+                                {% elif document.status != 'archived'  %}
+                                    <a href="{% url 'download-document' document.id %}" class='btn btn-success align-center'>Télécharger</a>
+                                {% endif %}
                             </td>
                         {% elif user.role == 'manager' %}
                         <td class='align-middle'>
                             <div class="d-flex gap-2">
                                 <a href="{% url 'new-workflow' %}?id={{ document.id }}&reject=0" class='btn btn-warning'>Valider</a>
                                 <a href="{% url 'new-workflow' %}?id={{ document.id }}&reject=1" class='btn btn-warning'>Rejeter</a>
+                                <a href="{% url 'download-document' document.id %}" class='btn btn-success'>Télécharger</a>
                             </div>
                         </td>
                         {% endif %}

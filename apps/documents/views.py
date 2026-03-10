@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.conf import settings
+from django.http import FileResponse
 from apps.utils.paginators import paginate_sort_and_filter
 from .forms import CreateDocumentForm
 from .models import Document
@@ -26,7 +28,7 @@ def list_documents(request):
     documents = []
     user = request.user
     if user.role == "employe":
-        documents = Document.objects.filter(created_by=user, status=Document.STATUS_DRAFT)
+        documents = Document.objects.filter(created_by=user)
     elif user.role == "manager":
         documents = Document.objects.filter(assigned_to=user, status=Document.STATUS_PENDING)
     elif user.role == "admin":
@@ -37,3 +39,17 @@ def list_documents(request):
         'user': user
     })
     return render(request, "documents/index.html", context)
+
+@login_required
+def download_document(request, document_id):
+    user = request.user
+    document = get_object_or_404(Document, id=document_id)
+    if user.role == 'manager':
+        if user != document.assigned_to:
+            messages.warning(request, "Vous n'avez pas la permission de télécharger ce document.")
+            return redirect('list-documents')
+    elif user.role == 'employe':
+        if user != document.created_by:
+            messages.warning(request, "Vous n'avez pas la permission de télécharger ce document.")
+            return redirect('list-documents')
+    return FileResponse(document.file.open('rb'), as_attachment=True)
