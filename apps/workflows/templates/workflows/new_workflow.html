@@ -15,7 +15,15 @@
         {{ field }}
     </div>
     {% endfor %}  
-    <button type="submit" name="form-submit" class="btn btn-warning">Soumettre le document</button>
+    <button type="submit" name="form-submit" class="btn btn-warning">
+        {% if rejection == 0 %}
+            Valider le document
+        {% elif rejection == 1 %}
+            Rejeter le document
+        {% else %}
+            Soumettre le document
+        {% endif %}
+    </button>
 </form>
 
 {% endblock %}
