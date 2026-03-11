@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Historique{% endblock %}
+
+{% block content %}
+
+<div class='table-responsive'>
+    <table class='table'>
+        <thead class='text-center'>
+            <th>
+                <a href="?id={{ document_id }}&sort_field=document__title&sort_order={% if sort_field == 'document__title' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter|urlencode }}{% endif %}">
+                    Titre
+                    {% if sort_field == 'document__title' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                </a>
+                {% include "pagination/column_filter.html" with column_name='document__title' %}
+            </th>
+            <th>
+                <a href="?id={{ document_id }}&sort_field=action&sort_order={% if sort_field == 'action' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter|urlencode }}{% endif %}">
+                    Action
+                    {% if sort_field == 'action' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                </a>
+                {% include "pagination/column_filter.html" with column_name='action' %}
+            </th>
+            <th>Statut du document</th>
+            <th>Utilisateur</th>
+            <th>Commentaire</th>
+            <th>Date</th>
+        </thead>
+        <tbody class='justify-content-center'>   
+            {% for workflow in page_obj %}
+                <tr>
+                    <td class='align-middle'>
+                        {{ workflow.document.title }}
+                    </td>
+                    <td class='align-middle'>
+                        {{ workflow.get_action_display }}
+                    </td>
+                    <td class='align-middle'>
+                        {{ workflow.document.get_status_display }}
+                    </td>
+                    <td class='align-middle'>
+                        {{ workflow.performed_by }}
+                    </td> 
+                    <td class='align-middle'>
+                        {{ workflow.comment }}
+                    </td>
+                    <td class='align-middle'>
+                        {{ workflow.performed_at|date:'d/m/y H:i' }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

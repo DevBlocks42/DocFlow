@@ -1,7 +1,7 @@
 from django.core.paginator import Paginator
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.db.models import DateField, DateTimeField
+from django.db.models import DateField, DateTimeField, CharField
 from datetime import datetime
 
 def paginate_sort_and_filter(page_number, sort_field, sort_order, filter_field, filter, objects, default_sort_field, allowed_fields, documents_per_page=settings.MAX_DOCUMENTS_PER_PAGE):
@@ -23,7 +23,16 @@ def paginate_sort_and_filter(page_number, sort_field, sort_order, filter_field, 
                     filter = filter.replace(year=datetime.now().year)
                 except Exception:
                     raise ValidationError("Format de date invalide, veuillez saisir une date au format jj/mm/yy ou jj/mm") 
-        objects = objects.filter(**{f"{filter_field}__icontains": filter})
+        #watchout
+        elif field.choices:
+            raw_value = get_choice_value_from_display(field.flatchoices, filter)
+
+            if raw_value:
+                objects = objects.filter(**{filter_field: raw_value})
+            else:
+                objects = objects.none()
+        else: 
+            objects = objects.filter(**{f"{filter_field}__icontains": filter})
     paginator = Paginator(objects, documents_per_page)
     page_obj = paginator.get_page(page_number)
     return {
@@ -33,3 +42,10 @@ def paginate_sort_and_filter(page_number, sort_field, sort_order, filter_field, 
         'filter_field': filter_field,
         'filter': filter
     }
+
+def get_choice_value_from_display(choices, display_value):
+    display_value = display_value.lower()
+    for value, label in choices:
+        if label.lower() == display_value:
+            return value
+    return None

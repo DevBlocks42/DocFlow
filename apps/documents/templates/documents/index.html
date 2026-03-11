@@ -57,7 +57,7 @@
                     {% include "pagination/column_filter.html" with column_name='assigned_to__username' %}
                 </th>
                 <th>
-                    <a href="?sort_field=created_at&sort_order={% if sort_field == 'created_at' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter }}{% endif %}">
+                    <a href="?sort_field=created_at&sort_order={% if sort_field == 'created_at' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter|date:"d/m/y" }}{% endif %}"> 
                         Date de création
                         {% if sort_field == 'created_at' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
                     </a>
