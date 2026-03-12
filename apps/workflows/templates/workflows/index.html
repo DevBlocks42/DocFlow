@@ -21,10 +21,34 @@
                 </a>
                 {% include "pagination/column_filter.html" with column_name='action' %}
             </th>
-            <th>Statut du document</th>
-            <th>Utilisateur</th>
-            <th>Commentaire</th>
-            <th>Date</th>
+            <th>
+                <a href="?id={{ document_id }}&sort_field=document__status&sort_order={% if sort_field == 'document__status' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter|urlencode }}{% endif %}">
+                    Statut document
+                    {% if sort_field == 'document__status' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                </a>
+                {% include "pagination/column_filter.html" with column_name='document__status' %}
+            </th>
+            <th>
+                <a href="?id={{ document_id }}&sort_field=performed_by__username&sort_order={% if sort_field == 'performed_by__username' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter|urlencode }}{% endif %}">
+                    Auteur action
+                    {% if sort_field == 'performed_by__username' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                </a>
+                {% include "pagination/column_filter.html" with column_name='performed_by__username' %}
+            </th>
+            <th>
+                <a href="?id={{ document_id }}&sort_field=comment&sort_order={% if sort_field == 'comment' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter|urlencode }}{% endif %}">
+                    Commentaire
+                    {% if sort_field == 'comment' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                </a>
+                {% include "pagination/column_filter.html" with column_name='comment' %}
+            </th>
+            <th>
+                <a href="?id={{ document_id }}&sort_field=performed_at&sort_order={% if sort_field == 'performed_at' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter|date:"d/m/y" }}{% endif %}">
+                    Date
+                    {% if sort_field == 'performed_at' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}  
+                </a>
+                {% include "pagination/column_filter.html" with column_name='performed_at' %}
+            </th>
         </thead>
         <tbody class='justify-content-center'>   
             {% for workflow in page_obj %}

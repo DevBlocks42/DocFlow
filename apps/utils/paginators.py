@@ -23,10 +23,8 @@ def paginate_sort_and_filter(page_number, sort_field, sort_order, filter_field, 
                     filter = filter.replace(year=datetime.now().year)
                 except Exception:
                     raise ValidationError("Format de date invalide, veuillez saisir une date au format jj/mm/yy ou jj/mm") 
-        #watchout
         elif field.choices:
             raw_value = get_choice_value_from_display(field.flatchoices, filter)
-
             if raw_value:
                 objects = objects.filter(**{filter_field: raw_value})
             else:
@@ -46,6 +44,7 @@ def paginate_sort_and_filter(page_number, sort_field, sort_order, filter_field, 
 def get_choice_value_from_display(choices, display_value):
     display_value = display_value.lower()
     for value, label in choices:
+        ##Comparaison partielle => utiliser un select sur le choix possibles
         if label.lower() == display_value:
             return value
     return None

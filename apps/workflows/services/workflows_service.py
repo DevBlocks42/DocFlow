@@ -37,7 +37,7 @@ def create_workflow(user, document, form, rejection=0):
     return workflow, success_message
 
 def list_workflows(user, objects, page_number, sort_field, sort_order, filter_field, filter):
-    allowed_fields = ["document__title", "action", "document.status", "performed_by", "comment", "performed_at"]
+    allowed_fields = ["document__title", "action", "document__status", "performed_by__username", "comment", "performed_at"]
     context = paginate_sort_and_filter(page_number, sort_field, sort_order, filter_field, filter, objects, "performed_at", allowed_fields)
     context.update({
         'user': user,
