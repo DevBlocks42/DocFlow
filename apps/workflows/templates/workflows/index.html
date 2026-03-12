@@ -8,42 +8,42 @@
     <table class='table'>
         <thead class='text-center'>
             <th>
-                <a href="?id={{ document_id }}&sort_field=document__title&sort_order={% if sort_field == 'document__title' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter|urlencode }}{% endif %}">
+                <a href="?id={{ document_id }}&sort_field=document__title&sort_order={% if sort_field == 'document__title' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={% if "_at" in filter_field %}{{ filter|date:"d/m/y" }}{% else %}{{ filter|urlencode }}{% endif %}{% endif %}">
                     Titre
                     {% if sort_field == 'document__title' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
                 </a>
                 {% include "pagination/column_filter.html" with column_name='document__title' %}
             </th>
             <th>
-                <a href="?id={{ document_id }}&sort_field=action&sort_order={% if sort_field == 'action' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter|urlencode }}{% endif %}">
+                <a href="?id={{ document_id }}&sort_field=action&sort_order={% if sort_field == 'action' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={% if "_at" in filter_field %}{{ filter|date:"d/m/y" }}{% else %}{{ filter|urlencode }}{% endif %}{% endif %}">
                     Action
                     {% if sort_field == 'action' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
                 </a>
-                {% include "pagination/column_filter.html" with column_name='action' %}
+                {% include "pagination/column_filter.html" with column_name='action' choices=workflow_status_choices %}
             </th>
             <th>
-                <a href="?id={{ document_id }}&sort_field=document__status&sort_order={% if sort_field == 'document__status' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter|urlencode }}{% endif %}">
+                <a href="?id={{ document_id }}&sort_field=document__status&sort_order={% if sort_field == 'document__status' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={% if "_at" in filter_field %}{{ filter|date:"d/m/y" }}{% else %}{{ filter|urlencode }}{% endif %}{% endif %}">
                     Statut document
                     {% if sort_field == 'document__status' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
                 </a>
-                {% include "pagination/column_filter.html" with column_name='document__status' %}
+                {% include "pagination/column_filter.html" with column_name='document__status' choices=document_status_choices %}
             </th>
             <th>
-                <a href="?id={{ document_id }}&sort_field=performed_by__username&sort_order={% if sort_field == 'performed_by__username' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter|urlencode }}{% endif %}">
+                <a href="?id={{ document_id }}&sort_field=performed_by__username&sort_order={% if sort_field == 'performed_by__username' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={% if "_at" in filter_field %}{{ filter|date:"d/m/y" }}{% else %}{{ filter|urlencode }}{% endif %}{% endif %}">
                     Auteur action
                     {% if sort_field == 'performed_by__username' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
                 </a>
                 {% include "pagination/column_filter.html" with column_name='performed_by__username' %}
             </th>
             <th>
-                <a href="?id={{ document_id }}&sort_field=comment&sort_order={% if sort_field == 'comment' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter|urlencode }}{% endif %}">
+                <a href="?id={{ document_id }}&sort_field=comment&sort_order={% if sort_field == 'comment' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={% if "_at" in filter_field %}{{ filter|date:"d/m/y" }}{% else %}{{ filter|urlencode }}{% endif %}{% endif %}">
                     Commentaire
                     {% if sort_field == 'comment' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
                 </a>
                 {% include "pagination/column_filter.html" with column_name='comment' %}
             </th>
             <th>
-                <a href="?id={{ document_id }}&sort_field=performed_at&sort_order={% if sort_field == 'performed_at' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter|date:"d/m/y" }}{% endif %}">
+                <a href="?id={{ document_id }}&sort_field=performed_at&sort_order={% if sort_field == 'performed_at' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={% if filter_field == 'performed_at'%}{{ filter|date:"d/m/y" }}{% else %}{{ filter|urlencode }}{% endif %}{% endif %}">
                     Date
                     {% if sort_field == 'performed_at' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}  
                 </a>
@@ -76,5 +76,5 @@
         </tbody>
     </table>
 </div>
-
+{% include "pagination/pagination.html" %}
 {% endblock %}

@@ -34,6 +34,9 @@ def list_documents(request):
     filter = request.GET.get('filter')
     try:
         context = document_service.list_documents(user, page_number, sort_field, sort_order, filter_field, filter)
+        context.update({
+            'document_status_choices': Document.STATUS_CHOICES
+        }) 
     except ValidationError as e:
         messages.warning(request, e.message)
         return redirect('list-documents')

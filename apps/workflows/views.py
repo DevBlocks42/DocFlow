@@ -62,6 +62,10 @@ def read_workflow(request):
         return redirect('list-documents')
     try:
         context = workflow_service.list_workflows(user, workflows, page_number, sort_field, sort_order, filter_field, filter)
+        context.update({
+            'workflow_status_choices': Workflow.STATUS_CHOICES,
+            'document_status_choices': Document.STATUS_CHOICES
+        }) 
     except ValidationError as e:
         messages.warning(request, e.message)
         return redirect('list-documents')
