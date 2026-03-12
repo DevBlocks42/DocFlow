@@ -2,6 +2,7 @@ from django.db import transaction
 from django.utils import timezone
 from ..models import Workflow
 from apps.documents.models import Document
+from apps.utils.paginators import paginate_sort_and_filter
 
 def is_allowed_to_create(user, document):
     if user.role == 'employe':
@@ -34,3 +35,12 @@ def create_workflow(user, document, form, rejection=0):
         workflow.save()
         workflow.document.save()
     return workflow, success_message
+
+def list_workflows(user, objects, page_number, sort_field, sort_order, filter_field, filter):
+    allowed_fields = ["document__title", "action", "document__status", "performed_by__username", "comment", "performed_at"]
+    context = paginate_sort_and_filter(page_number, sort_field, sort_order, filter_field, filter, objects, "performed_at", allowed_fields)
+    context.update({
+        'user': user,
+        'document_id': objects[0].document.id
+    })
+    return context

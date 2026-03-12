@@ -18,99 +18,99 @@
         {% endfor %}
     </div>
     {% endif %}
-    <div class='table-responsive'>
-        <table class='table'>
-            <thead class='text-center'>
-                <th>
-                    <a href="?sort_field=title&sort_order={% if sort_field == 'title' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter|urlencode }}{% endif %}">
-                        Titre
-                        {% if sort_field == 'title' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
-                    </a>
-                    {% include "pagination/column_filter.html" with column_name='title' %}
-                </th>
-                <th>
-                    <a href="?sort_field=description&sort_order={% if sort_field == 'description' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter|urlencode }}{% endif %}">
-                        Description
-                        {% if sort_field == 'description' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
-                    </a>
-                    {% include "pagination/column_filter.html" with column_name='description' %}
-                </th>
-                <th>
-                    <a href="?sort_field=category__name&sort_order={% if sort_field == 'category__name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter|urlencode }}{% endif %}">
-                        Catégorie
-                        {% if sort_field == 'category__name' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
-                    </a>
-                    {% include "pagination/column_filter.html" with column_name='category__name' %}
-                </th>
-                <th>
-                    <a href="?sort_field=created_by__username&sort_order={% if sort_field == 'created_by__username' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter|urlencode }}{% endif %}">
-                        Auteur
-                        {% if sort_field == 'created_by__username' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
-                    </a>
-                    {% include "pagination/column_filter.html" with column_name='created_by__username' %}
-                </th>
-                <th>
-                    <a href="?sort_field=assigned_to__username&sort_order={% if sort_field == 'assigned_to__username' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter|urlencode }}{% endif %}">
-                        Assigné à
-                        {% if sort_field == 'assigned_to__username' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
-                    </a>
-                    {% include "pagination/column_filter.html" with column_name='assigned_to__username' %}
-                </th>
-                <th>
-                    <a href="?sort_field=created_at&sort_order={% if sort_field == 'created_at' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter }}{% endif %}">
-                        Date de création
-                        {% if sort_field == 'created_at' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
-                    </a>
-                    {% include "pagination/column_filter.html" with column_name='created_at' %}
-                </th>
-                <th>
-                    <a href="?sort_field=status&sort_order={% if sort_field == 'status' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={{ filter|urlencode }}{% endif %}">
-                        Statut
-                        {% if sort_field == 'status' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
-                    </a>
-                    {% include "pagination/column_filter.html" with column_name='status' %}
-                </th>
-                {% if user.role == 'employe' or user.role == 'manager' %}
+        <div class='table-responsive-lg'>
+            <table class='table table-hover'>
+                <thead class='text-center'>
                     <th>
-                        Action
+                        <a href="?sort_field=title&sort_order={% if sort_field == 'title' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={% if "_at" in filter_field %}{{ filter|date:"d/m/y" }}{% else %}{{ filter|urlencode }}{% endif %}{% endif %}">
+                            Titre
+                            {% if sort_field == 'title' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                        </a>
+                        {% include "pagination/column_filter.html" with column_name='title' %}
                     </th>
-                {% endif %}
-            </thead>
-            <tbody class='justify-content-center'>
-                {% for document in page_obj %}
-                    <tr>
-                        <td class='align-middle'>{{ document.title }}</td>
-                        <td class='align-middle'>{{ document.description }}</td>
-                        <td class='align-middle'>{{ document.category }}</td>
-                        <td class='align-middle'>{{ document.created_by }}</td>
-                        <td class='align-middle'>{{ document.assigned_to }}</td>
-                        <td class='align-middle'>{{ document.created_at|date:'d/m/y H:i' }}</td>
-                        <td class='align-middle'>{{ document.get_status_display }}</td>
-                        {% if user.role == 'employe' %}
+                    <th>
+                        <a href="?sort_field=description&sort_order={% if sort_field == 'description' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={% if "_at" in filter_field %}{{ filter|date:"d/m/y" }}{% else %}{{ filter|urlencode }}{% endif %}{% endif %}">
+                            Description
+                            {% if sort_field == 'description' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                        </a>
+                        {% include "pagination/column_filter.html" with column_name='description' %}
+                    </th>
+                    <th>
+                        <a href="?sort_field=category__name&sort_order={% if sort_field == 'category__name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={% if "_at" in filter_field %}{{ filter|date:"d/m/y" }}{% else %}{{ filter|urlencode }}{% endif %}{% endif %}">
+                            Catégorie
+                            {% if sort_field == 'category__name' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                        </a>
+                        {% include "pagination/column_filter.html" with column_name='category__name' %}
+                    </th>
+                    <th>
+                        <a href="?sort_field=created_by__username&sort_order={% if sort_field == 'created_by__username' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={% if "_at" in filter_field %}{{ filter|date:"d/m/y" }}{% else %}{{ filter|urlencode }}{% endif %}{% endif %}">
+                            Auteur
+                            {% if sort_field == 'created_by__username' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                        </a>
+                        {% include "pagination/column_filter.html" with column_name='created_by__username' %}
+                    </th>
+                    <th>
+                        <a href="?sort_field=assigned_to__username&sort_order={% if sort_field == 'assigned_to__username' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={% if "_at" in filter_field %}{{ filter|date:"d/m/y" }}{% else %}{{ filter|urlencode }}{% endif %}{% endif %}">
+                            Assigné à
+                            {% if sort_field == 'assigned_to__username' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                        </a>
+                        {% include "pagination/column_filter.html" with column_name='assigned_to__username' %}
+                    </th>
+                    <th>
+                        <a href="?sort_field=created_at&sort_order={% if sort_field == 'created_at' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={% if "_at" in filter_field %}{{ filter|date:"d/m/y" }}{% else %}{{ filter|urlencode }}{% endif %}{% endif %}"> 
+                            Date de création
+                            {% if sort_field == 'created_at' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                        </a>
+                        {% include "pagination/column_filter.html" with column_name='created_at' %}
+                    </th>
+                    <th>
+                        <a href="?sort_field=status&sort_order={% if sort_field == 'status' and sort_order == 'asc' %}desc{% else %}asc{% endif %}{% if filter_field and filter %}&filter_field={{ filter_field }}&filter={% if "_at" in filter_field %}{{ filter|date:"d/m/y" }}{% else %}{{ filter|urlencode }}{% endif %}{% endif %}">
+                            Statut
+                            {% if sort_field == 'status' %}{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                        </a>
+                        {% include "pagination/column_filter.html" with column_name='status' choices=document_status_choices %}
+                    </th>
+                    {% if user.role == 'employe' or user.role == 'manager' %}
+                        <th>
+                            Action
+                        </th>
+                    {% endif %}
+                </thead>
+                <tbody class='justify-content-center'>
+                    {% for document in page_obj %}
+                        <tr>
+                            <td class='align-middle'>{{ document.title }}</td>
+                            <td class='align-middle'>{{ document.description }}</td>
+                            <td class='align-middle'>{{ document.category }}</td>
+                            <td class='align-middle'>{{ document.created_by }}</td>
+                            <td class='align-middle'>{{ document.assigned_to }}</td>
+                            <td class='align-middle'>{{ document.created_at|date:'d/m/y H:i' }}</td>
+                            <td class='align-middle'>{{ document.get_status_display }}</td>
+                            {% if user.role == 'employe' %}
+                                <td class='align-middle'>
+                                    {% if document.status == 'draft' %}
+                                        <div class="d-flex gap-2">
+                                            <a href="{% url 'new-workflow' %}?id={{ document.id }}" class='btn btn-warning'>Soumettre</a>
+                                            <a href="{% url 'download-document' document.id %}" class='btn btn-success'>Télécharger</a>
+                                        </div>
+                                    {% elif document.status != 'archived'  %}
+                                        <a href="{% url 'download-document' document.id %}" class='btn btn-success align-center'>Télécharger</a>
+                                    {% endif %}
+                                </td>
+                            {% elif user.role == 'manager' %}
                             <td class='align-middle'>
-                                {% if document.status == 'draft' %}
-                                    <div class="d-flex gap-2">
-                                        <a href="{% url 'new-workflow' %}?id={{ document.id }}" class='btn btn-warning'>Soumettre</a>
-                                        <a href="{% url 'download-document' document.id %}" class='btn btn-success'>Télécharger</a>
-                                    </div>
-                                {% elif document.status != 'archived'  %}
-                                    <a href="{% url 'download-document' document.id %}" class='btn btn-success align-center'>Télécharger</a>
-                                {% endif %}
+                                <div class="d-flex gap-2">
+                                    <a href="{% url 'new-workflow' %}?id={{ document.id }}&reject=0" class='btn btn-warning'>Valider</a>
+                                    <a href="{% url 'new-workflow' %}?id={{ document.id }}&reject=1" class='btn btn-warning'>Rejeter</a>
+                                    <a href="{% url 'download-document' document.id %}" class='btn btn-success'>Télécharger</a>
+                                </div>
                             </td>
-                        {% elif user.role == 'manager' %}
-                        <td class='align-middle'>
-                            <div class="d-flex gap-2">
-                                <a href="{% url 'new-workflow' %}?id={{ document.id }}&reject=0" class='btn btn-warning'>Valider</a>
-                                <a href="{% url 'new-workflow' %}?id={{ document.id }}&reject=1" class='btn btn-warning'>Rejeter</a>
-                                <a href="{% url 'download-document' document.id %}" class='btn btn-success'>Télécharger</a>
-                            </div>
-                        </td>
-                        {% endif %}
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     {% include "pagination/pagination.html" %}
 </div>
 {% endblock %}
