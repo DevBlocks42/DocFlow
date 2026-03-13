@@ -5,6 +5,7 @@ def create_document(user, form):
     document = form.save(commit=False)
     document.created_by = user
     document.save()
+    return document
 
 def list_documents(user, page_number, sort_field, sort_order, filter_field, filter):
     if user.role == "employe":
@@ -25,6 +26,13 @@ def document_download_allowed(user, document):
         return user == document.assigned_to
     elif user.role == 'employe':
         return user == document.created_by
+    elif user.role == 'admin':
+        return True 
+    return False
+
+def document_update_allowed(user, document):
+    if user.role == 'employe':
+        return user == document.created_by and document.status == Document.STATUS_DRAFT
     elif user.role == 'admin':
         return True 
     return False

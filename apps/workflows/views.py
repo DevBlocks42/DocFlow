@@ -19,7 +19,7 @@ def create_workflow(request):
     rejection = int(request.GET.get("reject", -1))
     try:
         document = get_object_or_404(Document, id=document_id)
-        if not workflows_service.is_allowed_to_create(user, document):
+        if not workflow_service.is_allowed_to_create(user, document):
             messages.warning(request, "Vous n'avez pas la permission d'accéder à ce document.")
             return redirect('list-documents')
     except Http404:
