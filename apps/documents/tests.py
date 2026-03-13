@@ -66,65 +66,49 @@ class DocumentListTestCase(TestCase):
     # ----------------------
 
     def test_sort_ascending(self):
+        response = self.client.get(self.url, {"sort_field": "title", "sort_order": "asc"}, follow=True)
+        page = response.context["page_obj"]
 
-        response = self.client.get(self.url, {
-            "sort_field": "title",
-            "sort_order": "asc"
-        })
+        # récupérer tout le queryset trié
+        qs_sorted = Document.objects.all().order_by("title")
+        expected_titles = [doc.title for doc in qs_sorted][:len(page.object_list)]
 
-        docs = list(response.context["page_obj"])
+        page_titles = [doc.title for doc in page.object_list]
 
-        titles = [doc.title for doc in docs]
-
-        self.assertEqual(titles, sorted(titles))
+        self.assertEqual(page_titles, expected_titles)
 
     def test_sort_descending(self):
+        response = self.client.get(self.url, {"sort_field": "title", "sort_order": "desc"}, follow=True)
+        page = response.context["page_obj"]
 
-        response = self.client.get(self.url, {
-            "sort_field": "title",
-            "sort_order": "desc"
-        })
+        qs_sorted = Document.objects.all().order_by("-title")
+        expected_titles = [doc.title for doc in qs_sorted][:len(page.object_list)]
+        page_titles = [doc.title for doc in page.object_list]
 
-        docs = list(response.context["page_obj"])
-
-        titles = [doc.title for doc in docs]
-
-        self.assertEqual(titles, sorted(titles, reverse=True))
+        self.assertEqual(page_titles, expected_titles)
 
     def test_invalid_sort_field(self):
-
-        response = self.client.get(self.url, {
-            "sort_field": "invalid_field"
-        })
-
+        # comme ta view redirige sur invalid sort_field
+        response = self.client.get(self.url, {"sort_field": "invalid_field"}, follow=False)
         self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse("list-documents"), response.url)
 
     # ----------------------
     # Filtering
     # ----------------------
 
     def test_filter_status(self):
+        response = self.client.get(self.url, {"filter_field": "status", "filter": "Brouillon"}, follow=True)
+        page = response.context["page_obj"]
 
-        response = self.client.get(self.url, {
-            "filter_field": "status",
-            "filter": "draft"
-        })
-
-        docs = response.context["page_obj"]
-
-        for doc in docs:
+        for doc in page.object_list:
             self.assertEqual(doc.status, "draft")
 
     def test_filter_title(self):
+        response = self.client.get(self.url, {"filter_field": "title", "filter": "Document 1"}, follow=True)
+        page = response.context["page_obj"]
 
-        response = self.client.get(self.url, {
-            "filter_field": "title",
-            "filter": "Document 1"
-        })
-
-        docs = response.context["page_obj"]
-
-        for doc in docs:
+        for doc in page.object_list:
             self.assertIn("Document 1", doc.title)
 
     # ----------------------
@@ -132,30 +116,35 @@ class DocumentListTestCase(TestCase):
     # ----------------------
 
     def test_filter_and_sort(self):
-
-        response = self.client.get(self.url, {
-            "filter_field": "status",
-            "filter": "Brouillon",
-            "sort_field": "title",
-            "sort_order": "desc"
-        })
-
-        docs = list(response.context["page_obj"])
-
-        titles = [doc.title for doc in docs]
-
-        self.assertEqual(titles, sorted(titles, reverse=True))
-
-    def test_filter_sort_and_pagination(self):
-
-        response = self.client.get(self.url, {
-            "filter_field": "status",
-            "filter": "Brouillon",
-            "sort_field": "title",
-            "sort_order": "asc",
-            "page": 2
-        })
-
+        response = self.client.get(
+            self.url,
+            {"filter_field": "status", "filter": "Brouillon", "sort_field": "title", "sort_order": "desc"},
+            follow=True,
+        )
         page = response.context["page_obj"]
 
-        self.assertEqual(page.number, 2)
+        qs_sorted = Document.objects.filter(status="draft").order_by("-title")
+        expected_titles = [doc.title for doc in qs_sorted][:len(page.object_list)]
+        page_titles = [doc.title for doc in page.object_list]
+
+        self.assertEqual(page_titles, expected_titles)
+
+    def test_filter_sort_and_pagination(self):
+        response = self.client.get(
+            self.url,
+            {
+                "filter_field": "status",
+                "filter": "Brouillon",
+                "sort_field": "title",
+                "sort_order": "asc",
+                "page": 2,
+            },
+            follow=True,
+        )
+        page = response.context["page_obj"]
+
+        qs_sorted = Document.objects.filter(status="draft").order_by("title")
+        expected_titles = [doc.title for doc in qs_sorted][10:20]  # page 2
+        page_titles = [doc.title for doc in page.object_list]
+
+        self.assertEqual(page_titles, expected_titles)

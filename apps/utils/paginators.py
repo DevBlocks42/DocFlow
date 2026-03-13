@@ -14,7 +14,6 @@ def paginate_sort_and_filter(page_number, sort_field, sort_order, filter_field, 
     if filter_field and filter:
         model = objects.model
         field = model._meta.get_field(filter_field.split("__")[0])
-        print(field, type(field))
         if isinstance(field, (DateField, DateTimeField)):
             try:
                 filter = datetime.strptime(filter, "%d/%m/%y").date()
@@ -25,7 +24,6 @@ def paginate_sort_and_filter(page_number, sort_field, sort_order, filter_field, 
                 except Exception:
                     raise ValidationError("Format de date invalide, veuillez saisir une date au format jj/mm/yy ou jj/mm") 
         elif field.choices:
-            print("CONDITION") 
             raw_value = get_choice_value_from_display(field.choices, filter)
             if raw_value:
                 objects = objects.filter(**{filter_field: raw_value})
