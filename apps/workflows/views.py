@@ -34,7 +34,7 @@ def create_workflow(request):
     elif request.method == "POST":
         form = CreateWorkflowForm(request.POST)
         if form.is_valid():
-            workflow, success_message = workflows_service.create_workflow(user, document, form, rejection)
+            workflow, success_message = workflow_service.create_workflow(user, document, form, rejection)
             messages.success(request, success_message)
     return redirect('list-documents')
 
