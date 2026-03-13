@@ -1,126 +1,253 @@
-# FR-fr
+# DocFlow
 
-# Gestionnaire de documents & workflows internes pour PME
+![Python](https://img.shields.io/badge/Python-3.x-blue)
+![Django](https://img.shields.io/badge/Django-Framework-green)
+![Status](https://img.shields.io/badge/Status-Active-success)
+![License](https://img.shields.io/badge/License-Educational-lightgrey)
 
-## Concept 
+**DocFlow** est un **Document Management System (DMS)** développé avec **Django** permettant de gérer le cycle de vie des documents dans une organisation : création, validation, consultation et suivi de l’historique.
 
-Une application qui permet aux petites entreprises ou équipes de gérer leurs documents internes, suivre leur validation, et garder un historique.
+Ce projet met l'accent sur :
 
-# Fonctionnalités principales 
+- une **architecture propre**
+- la **séparation de la logique métier**
+- un **workflow de validation**
+- la **traçabilité des actions**
+- une **interface ergonomique avec tri, filtrage et pagination**
 
-- Gestion des utilisateurs avec rôles (employé, manager, admin)
+---
 
-- Upload de documents (PDF, Word, Excel…) avec catégorisation
+# Fonctionnalités
 
-- Workflows : création → validation → archivage
+## Gestion des documents
 
-- Historique des modifications et notifications internes
+- upload sécurisé de fichiers
+- création et modification des métadonnées
+- téléchargement de documents
+- gestion des statuts
 
-- Recherche et filtrage avancé
+Exemples de statuts :
 
-- Tableau de bord pour managers : documents en attente, statistiques
+- Draft / Brouillon
+- Pending / En validation
+- Approved / Approuvé
+- Archived / Archivé
 
-# Entités principales
+---
 
-- Utilisateur
+## Workflow de validation
 
-    - username (string)
+Les documents suivent un processus de validation.
 
-    - email (string, unique)
+```
+Draft → Pending → Approved
+                 ↘ Archived
+```
 
-    - password (hashed)
+Les managers peuvent :
 
-    - role (enum : employé, manager, admin)
+- approuver un document
+- rejeter un document
+- consulter l’historique
 
-    - date_joined
+---
 
-    - avatar 
-    
-    - service/département
+# Historique des documents
 
-- Document
+Chaque document possède un historique retraçant :
 
-    - title (string)
+- les changements de statut
+- les validations
+- les utilisateurs ayant effectué les actions
 
-    - description (text)
+Cela permet d'assurer la **traçabilité complète du cycle de vie d’un document**.
 
-    - file (fichier uploadé, PDF/Word/Excel…)
+---
 
-    - category (ex : contrat, procédure, rapport…)
+# Gestion des utilisateurs
 
-    - created_by (FK → Utilisateur)
+Le système distingue plusieurs rôles :
 
-    - created_at, updated_at
+| Rôle | Permissions |
+|-----|-----|
+| Employe | Création et consultation de ses documents |
+| Manager | Validation ou rejet |
+| Admin | Gestion complète |
 
-    - status (enum : brouillon, en validation, validé, archivé)
+Les permissions sont appliquées via :
 
-    - assigned_to (FK → Utilisateur, pour validation)
+- filtres de queryset
+- logique métier dans les services
+- contrôles dans les vues
 
-- Workflow / Validation
+---
 
-    - document (FK → Document)
+# Recherche et navigation
 
-    - action (enum : soumis, approuvé, rejeté)
+L’interface permet une navigation efficace :
 
-    - performed_by (FK → Utilisateur)
+- tri par colonne
+- filtres dynamiques
+- pagination
 
-    - performed_at (datetime)
+Les filtres s’adaptent au type de champ :
 
-    - comment (text, optionnel)
+- champ texte → recherche libre
+- `ChoiceField` → menu déroulant
 
-- Catégorie
+---
 
-    - name (string)
+# Architecture du projet
 
-    - description (string, optionnel)
+Le projet suit une architecture visant à **séparer la logique métier de la couche web**.
 
-# Relations principales
+```
+apps/
+ ├── documents/
+ │
+ │   ├── models.py
+ │   ├── views.py
+ │   ├── forms.py
+ │   ├── services/
+ │   │     └── document_service.py
+ │   ├── templates/
+ │   ├── tests/
+ │   └── urls.py
+ ├── workflows/
+ ├── users/
+```
 
-- Un utilisateur peut créer plusieurs documents → OneToMany
+---
 
-- Un document peut avoir plusieurs étapes de validation → OneToMany
+# Architecture applicative
 
-- Une catégorie peut regrouper plusieurs documents → OneToMany
+```
+Client
+  │
+  ▼
+Django Views
+  │
+  ▼
+Services (Logique métier)
+  │
+  ▼
+Models
+  │
+  ▼
+Database
+```
 
-# Fonctionnalités clés
+### Principe
 
-- CRUD complet pour Documents et Catégories
+- **Views** : gestion des requêtes HTTP & contrôles d'accès
+- **Services** : logique métier
+- **Models** : accès aux données
 
-- Upload / téléchargement des fichiers
+Exemple :
 
-- Workflow de validation : un document passe par les étapes brouillon → en validation → validé ou rejeté
+```python
+document = document_service.create_document(request.user, form)
+```
 
-- Permissions :
+---
 
-    - Employé : peut créer ses documents, voir ses documents
+# Technologies
 
-    - Manager : peut valider/rejeter les documents assignés à son équipe
+| Technologie | Rôle |
+|-----|-----|
+| Python | langage principal |
+| Django | framework web |
+| Bootstrap | interface utilisateur |
+| PostgreSQL | base de données |
 
-    - Admin : gestion complète (utilisateurs, catégories, documents)
+---
 
-- Dashboard / statistiques : documents en attente, documents validés, activité récente
+# Installation
 
-- Notifications : email ou notifications internes quand un document est assigné ou validé
+## Cloner le projet
 
+```bash
+git clone https://github.com/devblocks42/DocFlow.git
+cd DocFlow
+```
 
-# EN-en
+---
 
-# Document & worflow management for small/medium companies
+## Créer un environnement virtuel
 
-## Concept 
+```bash
+python -m venv venv
+source venv/bin/activate
+```
 
-An application allowing companies or teams to manage their internal documents, follow their validation and keep an history of changes.
+---
 
-# Main features 
+## Installer les dépendances
 
-- User management with roles (employee, manager, admin)
+```bash
+pip install -r requirements.txt
+```
 
-- Document upload (PDF, Word, Excel...) with categories
+---
 
-- Workflows : creation -> validation -> archiving
+## Appliquer les migrations
 
-- Modification history and internal notifications
+```bash
+python manage.py migrate
+```
 
-- Search and advances filtering
+---
 
-- Manager's dashboard : pending documents, stats
+## Lancer le serveur
+
+```bash
+python manage.py runserver
+```
+
+Application disponible sur :
+
+```
+http://127.0.0.1:8000
+```
+
+---
+
+# Tests
+
+Lancer les tests :
+
+```bash
+python manage.py test
+```
+
+Les tests couvrent notamment :
+
+- l'authentification
+- les filtres de documents
+
+---
+
+# Sécurité
+
+Mesures mises en place :
+
+- validation des formulaires
+- contrôles d'accès selon les rôles
+- gestion sécurisée des fichiers uploadés (CDR pour images & pdf)
+
+---
+
+# Objectif du projet
+
+Ce projet a été développé afin de :
+
+- approfondir **Django**
+- pratiquer la **séparation des responsabilités**
+- implémenter un **workflow de validation**
+- concevoir une **application web maintenable**
+
+---
+
+# Licence
+
+Projet à but pédagogique.
