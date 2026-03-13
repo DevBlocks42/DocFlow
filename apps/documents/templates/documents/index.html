@@ -91,6 +91,7 @@
                                     {% if document.status == 'draft' %}
                                         <div class="d-flex gap-2">
                                             <a href="{% url 'new-workflow' %}?id={{ document.id }}" class='btn btn-warning'>Soumettre</a>
+                                            <a href="{% url 'update-document' %}?id={{ document.id }}" class='btn btn-danger'>Modifier</a>
                                             <a href="{% url 'download-document' document.id %}" class='btn btn-success'>Télécharger</a>
                                         </div>
                                     {% elif document.status != 'archived'  %}
