@@ -8,7 +8,7 @@ def is_allowed_to_create(user, document):
     if user.role == 'employe':
         return document.status == Document.STATUS_DRAFT and document.created_by == user 
     elif user.role == 'manager':
-        return document.status == Document.STATUS_PENDNG and document.assigned_to == user 
+        return document.status == Document.STATUS_PENDING and document.assigned_to == user 
     return False
 
 def create_workflow(user, document, form, rejection=0):
