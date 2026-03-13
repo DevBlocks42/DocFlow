@@ -17,6 +17,10 @@ Ce projet met l'accent sur :
 
 ---
 
+# Demo
+
+![demo](intro.gif)
+
 # Fonctionnalités
 
 ## Gestion des documents
