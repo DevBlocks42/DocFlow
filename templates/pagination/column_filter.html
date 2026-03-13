@@ -1,0 +1,18 @@
+
+<form class='form-inline mx-auto' method='GET'>
+    <input type='hidden' name='filter_field' value='{{ column_name }}'>
+    {% if document_id %}
+        <input type='hidden' name='id' value='{{ document_id }}'>
+    {% endif %}
+    {% if not choices %}
+        <input class='form-control mt-2' type='text' name='filter' value="{% if filter_field == column_name %}{{ filter|date:"d/m/y"|default:filter }}{% endif %}">
+    {% else %}
+        <select class='form-control mt-2' name='filter'>
+            <option value="">Aucun</option>
+            {% for value, label in choices %}
+                <option value='{{ label }}'>{{ label }}</option>
+            {% endfor %}
+        </select>
+    {% endif %}
+    <input class='form-control mt-2' type='submit' value='Filtrer'>
+</form>

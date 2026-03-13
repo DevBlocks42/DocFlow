@@ -11,8 +11,14 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+from PIL import Image
 import environ
 import os
+
+
+#PIL IMAGE RES LIMIT
+Image.MAX_IMAGE_PIXELS = 5_000_000
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -31,7 +37,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [] #WARNING
 
 
 # Application definition
@@ -136,17 +142,23 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-######
+###### Templates 
 TEMPLATES[0]['DIRS'] = [BASE_DIR / 'templates']
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+#USER UPLOADED FILES
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+FILE_UPLOAD_MAX_MEMORY_SIZE=env.int('FILE_UPLOAD_MAX_MEMORY_SIZE')
+DATA_UPLOAD_MAX_MEMORY_SIZE=env.int('DATA_UPLOAD_MAX_MEMORY_SIZE')
+
+
+MAX_DOCUMENTS_PER_PAGE=env.int('MAX_DOCUMENTS_PER_PAGE')

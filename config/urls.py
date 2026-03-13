@@ -23,7 +23,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', RedirectView.as_view(url='/users/login'), name='home_redirect'),
     path('users/', include('apps.users.urls')),
-    path('documents/', include('apps.documents.urls'))
+    path('documents/', include('apps.documents.urls')),
+    path('workflows/', include('apps.workflows.urls'))
 
 ]
 
