@@ -28,7 +28,7 @@ class CreateDocumentForm(forms.ModelForm):
             'required': 'Veuillez sélectionner un fichier.',
             'invalid': 'Le fichier téléchargé est invalide.'
         },
-        widget=forms.ClearableFileInput(attrs={'class': 'form-control'})
+        widget=forms.FileInput(attrs={'class': 'form-control'})
     )
     assigned_to = forms.ModelChoiceField(
         queryset=User.objects.filter(role='manager'),

@@ -3,8 +3,13 @@
 {% block title %}Nouveau document{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2>Créer un nouveau document</h2>
+<div class="container mt-5"> 
+    {% if update %}
+        <a class='btn btn-success mb-4' href='{% url 'download-document' document_id %}'>Télécharger</a>
+        <h2 class='mt-2'>Mettre à jour le document</h2>
+    {% else %}
+        <h2>Créer un nouveau document</h2>
+    {% endif %}
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {% for field in form %}
