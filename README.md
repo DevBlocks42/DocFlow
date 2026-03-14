@@ -1,6 +1,6 @@
 # DocFlow
 
-![Python](https://img.shields.io/badge/Python-3.x-blue)
+![Python](https://img.shields.io/badge/Python-3.12-blue)
 ![Django](https://img.shields.io/badge/Django-Framework-green)
 ![Status](https://img.shields.io/badge/Status-Active-success)
 ![License](https://img.shields.io/badge/License-Educational-lightgrey)
