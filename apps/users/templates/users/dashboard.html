@@ -2,7 +2,10 @@
 
 {% block title %}Dashboard{% endblock %}
 
+{% load static %}
+
 {% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <div class="container mt-5">
     <h2>Bienvenue {{ user.username }} !</h2>
     <p>Rôle : {{ role|capfirst }}</p>
@@ -25,6 +28,7 @@
             </a>
         {% endif %}
     </div>
+
     {% if messages %}
     <div>
         {% for message in messages %}
@@ -33,6 +37,15 @@
         </div>
         {% endfor %}
     </div>
+    {% endif %}
+
+    {% if user.role == 'manager' or user.role == 'admin' %}
+        <div>
+            <canvas id="documentStatusChart"></canvas>
+        </div>
+        {{ documents|json_script:"status-data" }}
+        
+        <script src="{% static 'scripts/printCharts.js' %}"></script>
     {% endif %}
 
     <div class="container mt-5">
