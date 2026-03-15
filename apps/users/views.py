@@ -7,6 +7,8 @@ from django.views.decorators.http import require_http_methods
 from .forms import CustomAuthenticationForm
 from .forms import UserUpdateForm
 from .forms import EditPasswordForm
+from apps.documents.services.document_service import get_documents_by_statuses
+from apps.documents.models import Document
 
 
 class UserLoginView(LoginView):
@@ -17,6 +19,7 @@ class UserLoginView(LoginView):
 @login_required
 def dashboard(request):
     user = request.user 
+    documents = get_documents_by_statuses(user)
     profile_form = UserUpdateForm(instance=user)
     password_form = EditPasswordForm(user=user)
     if request.method == 'POST':
@@ -37,6 +40,7 @@ def dashboard(request):
         "user": user,
         "role": user.role,
         "profile_form": profile_form,
-        "password_form": password_form
+        "password_form": password_form,
+        "documents": documents
     }
     return render(request, "users/dashboard.html", context)
