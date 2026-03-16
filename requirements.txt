@@ -36,6 +36,7 @@ prov==2.1.1
 psycopg2==2.9.11
 puremagic==2.0.0
 pydot==4.0.1
+PyMuPDF==1.27.2
 pyparsing==3.3.2
 python-dateutil==2.9.0.post0
 python-magic==0.4.27
