@@ -1,5 +1,7 @@
 from apps.utils.paginators import paginate_sort_and_filter
 from ..models import Document
+from django.db.models import Count
+import json
 
 def create_document(user, form):
     document = form.save(commit=False)
@@ -36,3 +38,12 @@ def document_update_allowed(user, document):
     elif user.role == 'admin':
         return True 
     return False
+
+def get_documents_by_statuses(user):
+    if user.role == 'manager' or user.role == 'admin':
+        documents = Document.objects.values('status').annotate(count=Count('id'))
+        status_labels = dict(Document.STATUS_CHOICES)
+        counts = {status_labels[document['status']]: document['count'] for document in documents}
+        print("Counts envoyé au template:", counts)
+        return counts
+    return None
